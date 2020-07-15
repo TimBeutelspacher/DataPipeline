@@ -35,15 +35,12 @@ public class ProducerAPI {
         String bootstrapServers = "193.196.54.92:9092";
         Logger logger = LoggerFactory.getLogger(ProducerAPI.class);
         String topic = "btc";
-        int userIdInt = 1;
-        GenericRecord recordGen;
         GenericData.Record record;
 
         // Schema variables
         String schemaRegURL = "http://193.196.54.92:8081";
         String schemaPath = System.getProperty("user.dir") + "/btc_schema.avsc";
         //String schemaPath = System.getProperty("user.dir")+"/src/main/resources/schemes/btc_schema.avsc";
-        String schemaString = null;
 
         // subject convention is "<topic-name>-value"
         String subject = topic + "-value";
@@ -54,11 +51,11 @@ public class ProducerAPI {
         String latestBlockHash = "";
         String inline = "";
         int responseCode;
-        URL latestBlockHashURL = new URL("https://api.blockcypher.com/v1/btc/main");
+        URL latestBlockHashURL = new URL("https://blockchain.info/latestblock");
         String basicBlockURLString = "https://api.blockcypher.com/v1/btc/main/blocks/";
+        String prevBlockURLString = "https://api.blockcypher.com/v1/btc/main/blocks/";
         URL singleBlockURL;
         URL prevBlockURL;
-        String output;
 
         // Output values
         String blockhash;
@@ -137,8 +134,12 @@ public class ProducerAPI {
 
                 logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - New Block detected: " + latestBlockHashJsonObject.get("hash").toString());
 
+                // Wait before creating a Request, just to be sure the block is available in the API
+                logger.info("Waiting 30 seconds to be sure the block is available in the second API.");
+                TimeUnit.SECONDS.sleep(30);
+
                 // Set the new requested blockhash as the newest stored
-                latestBlockHash = latestBlockHashJsonObject.get("hash").toString(); //.substring(1, latestBlockHashJsonObject.get("hash").toString().length()-1);
+                latestBlockHash = latestBlockHashJsonObject.get("hash").toString();
 
                 // Request "BlockAPI" with all informations
                 singleBlockURL = new URL(basicBlockURLString + latestBlockHash);
@@ -176,10 +177,12 @@ public class ProducerAPI {
                 if (latestBlockTime != 0) {
                     currentBlockTime = formatter.parse(singleBlockHashJsonObject.get("time").toString()).getTime() / 1000;
                     secondsSincePrevBlock = currentBlockTime - latestBlockTime;
-                } else {
+                }
+                // First time the script runs, the time of the previous block needs to get requested
+                else {
 
-                    // Request "BlockAPI" with all informations
-                    prevBlockURL = new URL(basicBlockURLString + singleBlockHashJsonObject.get("prev_block").toString());
+                    // Request "BlockAPI" with all the information
+                    prevBlockURL = new URL(prevBlockURLString + singleBlockHashJsonObject.get("prev_block").toString());
                     logger.info("Requested previous block URL: " + prevBlockURL.toString());
 
                     // Configure Connection to "latest Hash-API"
@@ -234,8 +237,6 @@ public class ProducerAPI {
                 record.put("size", size);
 
 
-                // Send data to kafka
-
                 logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Sending data to kafka.");
 
 
@@ -251,8 +252,7 @@ public class ProducerAPI {
             }
 
             // Wait before creating a new Request
-            TimeUnit.SECONDS.sleep(30);
+            TimeUnit.SECONDS.sleep(20);
         }
-
     }
 }
