@@ -34,7 +34,7 @@ public class ProducerAPI {
         // Kafka variables
         String bootstrapServers = "193.196.54.92:9092";
         Logger logger = LoggerFactory.getLogger(ProducerAPI.class);
-        String topic = "btc";
+        String topic = "btc2";
         GenericData.Record record;
 
         // Schema variables
@@ -241,7 +241,7 @@ public class ProducerAPI {
 
 
                 // send avro message to the topic page-view-event.
-                producer.send(new ProducerRecord<Integer, GenericRecord>(topic, null, record));
+                producer.send(new ProducerRecord<Integer, GenericRecord>(topic, blockHeight, record));
 
                 logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Closing kafka producer.");
 
