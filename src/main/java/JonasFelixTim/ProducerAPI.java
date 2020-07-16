@@ -11,12 +11,10 @@ import org.apache.kafka.clients.producer.*;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.util.parsing.json.JSON;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -27,8 +25,6 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class ProducerAPI {
-
-
     public static void main(String[] args) throws IOException, InterruptedException, RestClientException, ParseException {
 
         /*
@@ -176,7 +172,7 @@ public class ProducerAPI {
                 logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Sending data to kafka.");
                 producer.send(new ProducerRecord<Integer, GenericRecord>(topic, blockHeight, record));
 
-                // flush producer
+                // Flush producer
                 logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Flushing kafka producer.");
                 producer.flush();
             } else {
