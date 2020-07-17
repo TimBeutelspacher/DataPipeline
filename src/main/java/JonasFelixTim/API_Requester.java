@@ -15,19 +15,18 @@ import java.util.concurrent.TimeUnit;
 public class API_Requester {
 
     // Logger to see in what stage this script currently is
-    private static Logger logger = LoggerFactory.getLogger(Test3.class);
+    private static Logger logger = LoggerFactory.getLogger(API_Requester.class);
     private static final String SQL_INSERT = "INSERT INTO Uff1 (HASH) VALUES (?)";
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
         // API URLs as String
         String latestBlockHashURL = "https://api.blockcypher.com/v1/btc/main";
-        String latestBlockhash = "";
+        String latestBlockhash = getLatestHash();
 
         // PostgreSQL Variables
 
         Statement stmt = null;
-
 
         // Infinite loop to catch data 24/7
         while (true) {
@@ -118,5 +117,41 @@ public class API_Requester {
 
         // Returning JSON
         return createdJSON;
+    }
+
+    public static String getLatestHash(){
+        String hash = "";
+        try {
+
+            Connection c = null;
+            Statement stmt = null;
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+                    .getConnection("jdbc:postgresql://193.196.55.36:5432/test",
+                            "postgres", "Uff");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM Uff1 ORDER_BY ID DESC LIMIT 1" );
+            while ( rs.next() ) {
+                int id = rs.getInt("id");
+                hash = rs.getString("hash");
+
+            }
+            rs.close();
+            stmt.close();
+            c.close();
+
+
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+
+        return hash;
+
     }
 }
