@@ -20,19 +20,23 @@ public class API_Requester {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        // API URLs as String
+        // API URL as String
         String latestBlockHashURL = "https://api.blockcypher.com/v1/btc/main";
+
+        // Variable to store latest blockhash
         String latestBlockhash = getLatestHash();
 
         // PostgreSQL Variables
-
         Statement stmt = null;
+        int index = 1;
 
         // Infinite loop to catch data 24/7
         while (true) {
 
+            logger.info("Request: " + index);
+            index++;
             // Requesting API to get the newest blockhash
-            logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Requesting newest blockhash");
+            logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Requesting latest blockhash");
             JSONObject latestBlock = requestAPI(latestBlockHashURL);
 
             // Check if the requested hash is new
@@ -49,33 +53,24 @@ public class API_Requester {
                         .getConnection("jdbc:postgresql://193.196.55.36:5432/test",
                                 "postgres", "Uff");
                      PreparedStatement preparedStatement = c.prepareStatement(SQL_INSERT)) {
-                    System.out.println("Opened database successfully");
+                    logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Opened database successfully");
                     preparedStatement.setString(1, latestBlock.get("hash").toString());
 
-                    int row = preparedStatement.executeUpdate();
-
-                    // rows affected
-                    System.out.println(row); //1
-
                 } catch (SQLException e) {
-                    System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+                    logger.info(new Timestamp(System.currentTimeMillis()).getTime() + "SQL State: %s\n%s", e.getSQLState(), e.getMessage());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                System.out.println("Records created successfully");
-
-                logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Block has been send to postgreSQL ");
+                logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Block has been sent to postgreSQL ");
             } else {
                 logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - The requested blockhash is not new. " + latestBlockhash);
             }
 
-
             // Wait before creating a new Request
-            // MAX_REQUESTS = 200/hour => 1 request every 18 seconds | to be sure we don exceed the limit we take 20 seconds
-            TimeUnit.SECONDS.sleep(20);
+            // MAX_REQUESTS = 2000/day => 83/hour => 1,38/minute => 1 request every 43 seconds | to be sure we don exceed the limit we take 45 seconds
+            TimeUnit.SECONDS.sleep(45);
         }
-
     }
 
 
@@ -83,10 +78,13 @@ public class API_Requester {
     public static JSONObject requestAPI(String _URL) throws IOException, InterruptedException {
 
         // Convert given String to URL-object
-        URL requestedURL = new URL(_URL);
+        String token1 = "?token=62d8d1ca62e845959421b3e7a08e139b";
+        String token2 = "?token=ff09471dd4394d4aa844dc106fa932e8";
+        URL requestedURL1 = new URL(_URL +token1);
+        URL requestedURL2 = new URL(_URL +token2);
 
         // Configure Connection to requested API
-        HttpURLConnection connection = (HttpURLConnection) requestedURL.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) requestedURL1.openConnection();
         connection.setRequestMethod("GET");
         connection.connect();
 
@@ -95,13 +93,13 @@ public class API_Requester {
         // Check responsecode
         String inline = "";
         if (responseCode != 200) {
-            logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Responsecode: " + responseCode + " Retrying in 10 seconds.");
+            logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Responsecode: " + responseCode + " Retrying in 25 seconds.");
             // Wait before creating a new Request
-            TimeUnit.SECONDS.sleep(10);
+            TimeUnit.SECONDS.sleep(25);
             requestAPI(_URL);
         } else {
             // Convert response to String
-            Scanner sc = new Scanner(requestedURL.openStream());
+            Scanner sc = new Scanner(requestedURL2.openStream());
             inline = "";
             while (sc.hasNext()) {
                 inline += sc.nextLine();
@@ -119,9 +117,10 @@ public class API_Requester {
         return createdJSON;
     }
 
-    public static String getLatestHash(){
+    public static String getLatestHash() {
         String hash = "";
         try {
+            logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " + Requesting newest blockhash from database.");
 
             Connection c = null;
             Statement stmt = null;
@@ -130,13 +129,11 @@ public class API_Requester {
                     .getConnection("jdbc:postgresql://193.196.55.36:5432/test",
                             "postgres", "Uff");
             c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
 
 
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery( "SELECT * FROM Uff1 ORDER_BY ID DESC LIMIT 1" );
-            while ( rs.next() ) {
-                int id = rs.getInt("id");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Uff1 ORDER BY id DESC LIMIT 1");
+            while (rs.next()) {
                 hash = rs.getString("hash");
 
             }
@@ -145,13 +142,11 @@ public class API_Requester {
             c.close();
 
 
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-            System.exit(0);
+        } catch (Exception e) {
+            logger.info(e.getClass().getName() + ": " + e.getMessage());
         }
-        System.out.println("Operation done successfully");
+        logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Database request successful");
 
         return hash;
-
     }
 }

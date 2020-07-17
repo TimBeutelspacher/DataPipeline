@@ -8,6 +8,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.commons.io.IOUtils;
 import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.common.utils.Java;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,9 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class JavaProducer {
+
+    private static Logger logger = LoggerFactory.getLogger(JavaProducer.class);
+
     public static void main(String[] args) throws IOException, InterruptedException, RestClientException, ParseException {
 
         /*
@@ -38,7 +42,7 @@ public class JavaProducer {
 
         // Kafka variables
         String bootstrapServers = "193.196.54.92:9092";
-        Logger logger = LoggerFactory.getLogger(ProducerAPI.class);
+
         String topic = "btc2";
         GenericData.Record record;
         String schema = null;
@@ -193,10 +197,11 @@ public class JavaProducer {
 
 
     // Method to get a JSONObject from a given API-URL
-    public static JSONObject requestAPI(String _URL) throws IOException {
+    public static JSONObject requestAPI(String _URL) throws IOException, InterruptedException {
 
         // Convert given String to URL-object
-        URL requestedURL = new URL(_URL);
+        String token1 = "?token=b80fa1e065494e4f80d9a24033b0df3f";
+        URL requestedURL = new URL(_URL +token1);
 
         // Configure Connection to requested API
         HttpURLConnection connection = (HttpURLConnection) requestedURL.openConnection();
@@ -206,9 +211,12 @@ public class JavaProducer {
         int responseCode = connection.getResponseCode();
 
         // Check responsecode
-        String inline;
+        String inline ="";
         if (responseCode != 200) {
-            throw new RuntimeException("HttpResponseCode: " + responseCode);
+            logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Responsecode: " + responseCode + " Retrying in 20 seconds.");
+            // Wait before creating a new Request
+            TimeUnit.SECONDS.sleep(20);
+            requestAPI(_URL);
         } else {
             // Convert response to String
             Scanner sc = new Scanner(requestedURL.openStream());
@@ -239,13 +247,12 @@ public class JavaProducer {
                     .getConnection("jdbc:postgresql://193.196.55.36:5432/test",
                             "postgres", "Uff");
             c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
+            logger.info("Opened database successfully");
 
 
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery( "SELECT * FROM Uff1 ORDER_BY ID DESC LIMIT 1" );
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM Uff1 ORDER BY id DESC LIMIT 1" );
             while ( rs.next() ) {
-                int id = rs.getInt("id");
                 hash = rs.getString("hash");
 
             }
@@ -255,10 +262,9 @@ public class JavaProducer {
 
 
         } catch ( Exception e ) {
-            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-            System.exit(0);
+            logger.info( e.getClass().getName()+": "+ e.getMessage() );
         }
-        System.out.println("Operation done successfully");
+        logger.info("Operation done successfully");
 
         return hash;
 
