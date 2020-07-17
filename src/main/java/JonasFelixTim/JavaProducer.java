@@ -244,14 +244,14 @@ public class JavaProducer {
             Statement stmt = null;
             Class.forName("org.postgresql.Driver");
             c = DriverManager
-                    .getConnection("jdbc:postgresql://193.196.55.36:5432/test",
-                            "postgres", "Uff");
+                    .getConnection("jdbc:postgresql://193.196.55.64/hashdb",
+                            "postgres", "KSC4ever");
             c.setAutoCommit(false);
             logger.info("Opened database successfully");
 
 
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery( "SELECT * FROM Uff1 ORDER BY id DESC LIMIT 1" );
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM hashtable ORDER BY id DESC LIMIT 1" );
             while ( rs.next() ) {
                 hash = rs.getString("hash");
 

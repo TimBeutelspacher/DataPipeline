@@ -16,7 +16,7 @@ public class API_Requester {
 
     // Logger to see in what stage this script currently is
     private static Logger logger = LoggerFactory.getLogger(API_Requester.class);
-    private static final String SQL_INSERT = "INSERT INTO Uff1 (HASH) VALUES (?)";
+    private static final String SQL_INSERT = "INSERT INTO hashes (HASH) VALUES (?)";
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
@@ -28,13 +28,10 @@ public class API_Requester {
 
         // PostgreSQL Variables
         Statement stmt = null;
-        int index = 1;
 
         // Infinite loop to catch data 24/7
         while (true) {
 
-            logger.info("Request: " + index);
-            index++;
             // Requesting API to get the newest blockhash
             logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Requesting latest blockhash");
             JSONObject latestBlock = requestAPI(latestBlockHashURL);
@@ -50,11 +47,16 @@ public class API_Requester {
                     PostgreSQL Code
                  */
                 try (Connection c = DriverManager
-                        .getConnection("jdbc:postgresql://193.196.55.36:5432/test",
-                                "postgres", "Uff");
+                        .getConnection("jdbc:postgresql://193.196.55.64:5432/hashdb",
+                                "postgres", "KSC4ever");
                      PreparedStatement preparedStatement = c.prepareStatement(SQL_INSERT)) {
                     logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Opened database successfully");
                     preparedStatement.setString(1, latestBlock.get("hash").toString());
+
+                    int row = preparedStatement.executeUpdate();
+                    // rows affected
+                    logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Row affected: " + row);
+
 
                 } catch (SQLException e) {
                     logger.info(new Timestamp(System.currentTimeMillis()).getTime() + "SQL State: %s\n%s", e.getSQLState(), e.getMessage());
@@ -80,8 +82,8 @@ public class API_Requester {
         // Convert given String to URL-object
         String token1 = "?token=62d8d1ca62e845959421b3e7a08e139b";
         String token2 = "?token=ff09471dd4394d4aa844dc106fa932e8";
-        URL requestedURL1 = new URL(_URL +token1);
-        URL requestedURL2 = new URL(_URL +token2);
+        URL requestedURL1 = new URL(_URL + token1);
+        URL requestedURL2 = new URL(_URL + token2);
 
         // Configure Connection to requested API
         HttpURLConnection connection = (HttpURLConnection) requestedURL1.openConnection();
@@ -96,7 +98,6 @@ public class API_Requester {
             logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Responsecode: " + responseCode + " Retrying in 25 seconds.");
             // Wait before creating a new Request
             TimeUnit.SECONDS.sleep(25);
-            requestAPI(_URL);
         } else {
             // Convert response to String
             Scanner sc = new Scanner(requestedURL2.openStream());
@@ -126,13 +127,12 @@ public class API_Requester {
             Statement stmt = null;
             Class.forName("org.postgresql.Driver");
             c = DriverManager
-                    .getConnection("jdbc:postgresql://193.196.55.36:5432/test",
-                            "postgres", "Uff");
+                    .getConnection("jdbc:postgresql://193.196.55.64:5432/hashdb",
+                            "postgres", "KSC4ever");
             c.setAutoCommit(false);
 
-
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Uff1 ORDER BY id DESC LIMIT 1");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM hashes ORDER BY id DESC LIMIT 1");
             while (rs.next()) {
                 hash = rs.getString("hash");
 
