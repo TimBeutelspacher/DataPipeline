@@ -43,7 +43,7 @@ public class JavaProducer {
         // Kafka variables
         String bootstrapServers = "193.196.54.92:9092";
 
-        String topic = "btc2";
+        String topic = "topic_btc";
         GenericData.Record record;
         String schema = null;
 
