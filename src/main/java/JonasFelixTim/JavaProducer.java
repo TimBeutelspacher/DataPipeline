@@ -24,6 +24,11 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 public class JavaProducer {
     public static void main(String[] args) throws IOException, InterruptedException, RestClientException, ParseException {
 
@@ -114,16 +119,15 @@ public class JavaProducer {
 
             //JSONObject latestBlockHashJsonObject = requestAPI(latestBlockHashURL);
 
-            /*
-                TODO: Request PostgreSQL
-             */
+            String requestedHash = getLatestHash();
+
 
             // If the requested blockhash is different to the stored one, then its a new one
-            if (!latestBlockHash.equals(latestBlockHashJsonObject.get("hash").toString())) {
+            if (!latestBlockHash.equals(requestedHash)) {
 
                 // Set the new requested blockhash as the newest stored
-                logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - New Block detected: " + latestBlockHashJsonObject.get("hash").toString());
-                latestBlockHash = latestBlockHashJsonObject.get("hash").toString();
+                logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - New Block detected: " + requestedHash);
+                latestBlockHash = requestedHash;
 
 
                 // Request detailed API to get all the information
@@ -179,7 +183,7 @@ public class JavaProducer {
                 producer.flush();
             } else {
                 // The requested block has already been stored
-                logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - The requested blockhash (" + latestBlockHashJsonObject.get("hash").toString() + ") is not new.");
+                logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - The requested blockhash (" + requestedHash + ") is not new.");
             }
 
             // Wait before creating a new Request to postgreSQL
@@ -224,4 +228,40 @@ public class JavaProducer {
         // Returning JSON
         return createdJSON;
     }
+    public static String getLatestHash(){
+        String hash = "";
+        try {
+
+            Connection c = null;
+            Statement stmt = null;
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+                    .getConnection("jdbc:postgresql://193.196.55.36:5432/test",
+                            "postgres", "Uff");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM Uff1 ORDER_BY ID DESC LIMIT 1" );
+            while ( rs.next() ) {
+                int id = rs.getInt("id");
+                hash = rs.getString("hash");
+
+            }
+            rs.close();
+            stmt.close();
+            c.close();
+
+
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+
+        return hash;
+
+    }
+
 }
