@@ -251,7 +251,7 @@ public class JavaProducer {
 
 
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery( "SELECT * FROM hashtable ORDER BY id DESC LIMIT 1" );
+            ResultSet rs = stmt.executeQuery( "SELECT * FROM hashes ORDER BY id DESC LIMIT 1" );
             while ( rs.next() ) {
                 hash = rs.getString("hash");
 
