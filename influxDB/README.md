@@ -1,5 +1,5 @@
 # InfluxDB
-Stores the data we want to display
+Stores the data we want to display in our Grafana dashboard.
 ## Getting started
 Downloading InfluxDB Docker image
 ```bash 
