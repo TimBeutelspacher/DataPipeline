@@ -1,3 +1,6 @@
+# Confluent Platform - Kafka
+
+## Kafka configuration
 
 Kafka 
 
@@ -7,5 +10,9 @@ topics
 
 Java installiert
 
-Connector
+## InfluxDB Sink Connector
+
+  Now when the data got from the
+
+
 
