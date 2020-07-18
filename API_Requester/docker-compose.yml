@@ -1,0 +1,8 @@
+version: '3'
+services:
+ java:
+  network_mode: host
+  restart: always
+  build:
+   context: .
+   dockerfile: ./Dockerfile
