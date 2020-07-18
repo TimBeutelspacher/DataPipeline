@@ -17,7 +17,7 @@ The complete code incl. comments can be found at: https://github.com/TimBeutelsp
 
 ## Kafka properties
 
-The main purpose of this JavaProducer is to send data to a Kafka topic on our virtual machine. To be able to do so, we create an instance of the imported `<Producer>` class. To create such an instance we need to set proper properties:
+The main purpose of this JavaProducer is to send data to a Kafka topic on our virtual machine. To be able to do so, we create an instance of the imported `Producer` class. To create such an instance we need to set proper properties:
 key & value serializer = `io.confluent.kafka.serializers.KafkaAvroSerializer`
 schema registry URL = `http://193.196.54.92:8081`
 bootstrap server = `193.196.54.92:9092`
