@@ -17,9 +17,7 @@ Use the following parameters to add a data source.
 - HTTP Method: Post
   
 ## Building a dashboard
-To build a dashboard we need data in our databasse.
-
-The first option to query data ist to use the existing form provided by Grafana:
+The first option to query data is to use the existing form provided by Grafana:
 ![GrafanaQuery](https://github.com/TimBeutelspacher/DataPipeline/blob/master/images/GrafanaQuery.PNG)
 
 The second option is to write a query in InfluxQL:
