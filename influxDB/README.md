@@ -1,14 +1,9 @@
 # InfluxDB
 Stores the data we want to display in our Grafana dashboard.
 ## Getting started
-Downloading InfluxDB Docker image
+Downloading and installing InfluxDB to a docker container
 ```bash 
-docker pull influxdb
+docker run -d -p 8086:8086 --name influxdb-local influxdb:1.7.7
 ```
-Installing and starting of InfluxDB
-```bash
-sudo apt-get update && sudo apt-get install influxdb
-sudo systemctl unmask influxdb.service
-sudo systemctl start influxdb
-```
+
 
