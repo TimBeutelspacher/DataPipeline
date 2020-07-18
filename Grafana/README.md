@@ -1,5 +1,5 @@
 # Grafana
-We are using Grafana as our tool to display time series data from our InfluxDB.
+We are using Grafana to display time series data from our InfluxDB.
 ## Getting started
 To download and install Grafana in a docker container
 ```
