@@ -2,7 +2,7 @@
 InfluxDB is a time series database we use to store the data we want to display with Grafana.
 
 ## Getting started
-Downloading and installing InfluxDB to a docker container
+Downloading and installing InfluxDB in a docker container.
 ``` 
 docker run -d -p 8086:8086 --name influxdb-local influxdb:1.7.7
 ```
