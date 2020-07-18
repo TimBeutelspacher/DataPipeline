@@ -32,5 +32,4 @@ Sometimes the data we recieve in Grafana isn't in the format in which we would l
 ![GrafanaTransformData](https://github.com/TimBeutelspacher/DataPipeline/blob/master/images/GrafanaTransformData.PNG)
 
 We decided that the best way to display time series data is a graph.
-https://github.com/TimBeutelspacher/DataPipeline/blob/master/images/GrafanaGraph.PNG
 ![GrafanaGraph](https://github.com/TimBeutelspacher/DataPipeline/blob/master/images/GrafanaGraph.PNG)
