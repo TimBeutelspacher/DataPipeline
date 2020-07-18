@@ -20,7 +20,7 @@ Use the following parameters to add a data source.
 The first option to query data is to use the existing form provided by Grafana:
 ![GrafanaQuery](https://github.com/TimBeutelspacher/DataPipeline/blob/master/images/GrafanaQuery.PNG)
 
-The second option is to write a query in InfluxQL:
+The second option is to write a query with InfluxQL:
 ```
 SELECT * FROM "topic_btc" 
 GROUP BY * 
