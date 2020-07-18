@@ -1,5 +1,6 @@
 # InfluxDB
-Stores the data we want to display in our Grafana dashboard.
+InfluxDB is a time series database we use to store the data we want to display with Grafana.
+
 ## Getting started
 Downloading and installing InfluxDB to a docker container
 ``` 
