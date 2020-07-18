@@ -51,3 +51,16 @@ For the JavaProducer we basically send 2 different requests.
 2. Detailled Blockinformation
   After we requested a new blockhash from the PostgreSQL database, we need to get more information about the newest block. To do so, we send a request to the following endpoint: `https://api.blockcypher.com/v1/btc/main/blocks/$BLOCKHASH$`
   
+  
+  
+## Run the JavaProducer
+
+The `JavaProducer.jar` runs in a Docker Container. To start the JavaProducer you need to enter the following commands:
+
+```
+docker-compose build
+docker-compose up
+```
+As soon as the JavaProducer runs, the logs will be shown.
+
+  
