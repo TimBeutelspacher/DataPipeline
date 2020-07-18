@@ -1,4 +1,8 @@
-#InfluxDB
+# InfluxDB
+Stores the data we want to display
+## Getting started
 Downloading InfluxDB Docker image
-  docker pull influxdb
+```bash 
+docker pull influxdb
+```
 
