@@ -1,10 +1,10 @@
 # API_Requester
 
-Grabs the newest Bitcoin hash from https://live.blockcypher.com/btc/ and insterts the into an PostgresSQL Database.
+Grabs the newest Bitcoin hash from https://live.blockcypher.com/btc/ and insterts the hash into an PostgresSQL Database.
 
 ## Code
 
-Java Code from .Jar file can be found here:
+Java Code from .Jar file as well as the documentation on the code can be found here:
 https://github.com/TimBeutelspacher/DataPipeline/blob/master/JavaCode/src/main/java/JonasFelixTim/API_Requester.java
 
 ## Getting started
