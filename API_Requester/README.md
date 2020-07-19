@@ -9,7 +9,7 @@ https://github.com/TimBeutelspacher/DataPipeline/blob/master/JavaCode/src/main/j
 
 ## Getting started
 
-Make a directory and add DataPipeline.jar, Dockerfile and docker-compose.yml.
+Make a directory and add `DataPipeline.jar`, `Dockerfile` and `docker-compose.yml`.
 
 Build and start the container.
 
