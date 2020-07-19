@@ -43,7 +43,7 @@ confluent-hub install confluentinc/kafka-connect-influxdb:latest
 
 After the connector itself is installed the properties have to be configured. The topic must be set to the topic the data shall be streamed from. Also, the database which the data shall be streamed to must be given in the sink-JSON and in the sink-properties. To start the connector we entered the following command:
 ```
-	curl -X POST -d @influxdb-sink-connector.json http://localhost:8083/connectors -H "Content-Type: application/json"
+curl -X POST -d @influxdb-sink-connector.json http://localhost:8083/connectors -H "Content-Type: application/json"
 ```
 
 The whole code of the properties and the corresponding JSON file can be found at: https://github.com/TimBeutelspacher/DataPipeline/tree/master/Confluent%20platform
