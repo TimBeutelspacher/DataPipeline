@@ -70,7 +70,9 @@ For creating the table we have used following Java code:
             }
         }
 
+#### 3. Insert Data
 
+-> https://github.com/TimBeutelspacher/DataPipeline/tree/master/API_Requester
 
 ## Sources:
 
