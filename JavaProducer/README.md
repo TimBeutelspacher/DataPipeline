@@ -55,6 +55,7 @@ For the JavaProducer we basically send 2 different requests.
   
 ## Run the JavaProducer
 
+Make a directory and add DataPipeline.jar, Dockerfile and docker-compose.yml.
 The `JavaProducer.jar` runs in a Docker Container. To start the JavaProducer you need to enter the following commands:
 
 ```
