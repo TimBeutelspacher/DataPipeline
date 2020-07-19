@@ -1,6 +1,6 @@
 # API_Requester
 
-Grabs the newest Bitcoin hash from https://live.blockcypher.com/btc/ and inserts the hash into an PostgresSQL Database.
+Grabs the newest Bitcoin hash from https://api.blockcypher.com/v1/btc/main and inserts the hash into an PostgresSQL Database.
 
 ## Code
 
