@@ -16,6 +16,7 @@ public class API_Requester {
 
     // Logger to see in what stage this script currently is
     private static Logger logger = LoggerFactory.getLogger(API_Requester.class);
+    // precompiled SQL statement for setting in parameter values 
     private static final String SQL_INSERT = "INSERT INTO hashes (HASH) VALUES (?)";
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -46,11 +47,13 @@ public class API_Requester {
                 /*
                     PostgreSQL Code
                  */
+                // establish connection to PostgreSQL Database
                 try (Connection c = DriverManager
                         .getConnection("jdbc:postgresql://193.196.55.64:5432/hashdb",
                                 "postgres", "KSC4ever");
                      PreparedStatement preparedStatement = c.prepareStatement(SQL_INSERT)) {
                     logger.info(new Timestamp(System.currentTimeMillis()).getTime() + " - Opened database successfully");
+                    // set parameter value in prepared statement to hash of the latest block
                     preparedStatement.setString(1, latestBlock.get("hash").toString());
 
                     int row = preparedStatement.executeUpdate();
@@ -118,6 +121,7 @@ public class API_Requester {
         return createdJSON;
     }
 
+    // method to get latest hash from PostgreSQL Database to avoid redundant data
     public static String getLatestHash() {
         String hash = "";
         try {
@@ -132,6 +136,7 @@ public class API_Requester {
             c.setAutoCommit(false);
 
             stmt = c.createStatement();
+            // get very last record
             ResultSet rs = stmt.executeQuery("SELECT * FROM hashes ORDER BY id DESC LIMIT 1");
             while (rs.next()) {
                 hash = rs.getString("hash");
