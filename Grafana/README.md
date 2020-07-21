@@ -28,7 +28,7 @@ ORDER BY DESC LIMIT 5
 ```
 In this case I want to query all field values from the measurement "topic_btc", but I only want the last 5 entries of this measurement.
 
-Sometimes the data we recieve in Grafana isn't in the format in which we would like to display it. Therefore we have to use a calculation to recieve the data in the right format. This is possible in the tab "Transform". In our case we store the transaction volume of a bitcoin block in satoshi, but we want to display it in bitcoin (1 bitcoin = 100 000 000 satoshi). In the following piture you can see how we calculate this. 
+Sometimes the data we recieve in Grafana isn't in the format in which we would like to display it. Therefore we have to use a calculation to recieve the data in the right format. This is possible in the tab "Transform". In our case we store the transaction volume of a bitcoin block in satoshi, but we want to display it in bitcoin (1 bitcoin = 100 000 000 satoshi). In the following picture you can see how we calculate this. 
 ![GrafanaTransformData](https://github.com/TimBeutelspacher/DataPipeline/blob/master/images/GrafanaTransformData.PNG)
 
 We decided that the best way to display time series data is a graph.
